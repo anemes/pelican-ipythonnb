@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from bs4 import BeautifulSoup
 import os
-
 import json
 import markdown
 
@@ -52,6 +52,18 @@ def strip_tags(html):
 
 
 # Fix CSS
+js = '''
+<script type="text/javascript">
+    function toggle(d){
+        if (document.getElementById(d).style.display=='block') {
+            document.getElementById(d).style.display = 'none'; 
+        }else{
+            document.getElementById(d).style.display = 'block';
+        }
+    }
+    show=true;
+</script>
+'''
 
 CUSTOM_CSS = '''
 <style type="text/css">
@@ -78,6 +90,7 @@ div.input_area {
     border: none;
     background: none;
     margin-left: 6px;
+    display:none;
 }
 
 div.output_subarea {
@@ -184,8 +197,28 @@ class iPythonNB(BaseReader):
 
         content, info = exporter.from_filename(filepath)
 
+        soup = BeautifulSoup(content)
+
+        # find all the inputs with hide and strip them out
+        inputs = 0
+        for i in soup.findAll("div", {"class" : "input"}):
+            if i.findChildren()[1].findChild().findChild().findChild().find(text='#HIDE') != None:
+                i.extract()
+            else:
+                inputs = inputs+1
+                tag = soup.new_tag('a', href="javascript:toggle('input%s');" % inputs , target='_self')
+                tag.string = i.findChildren()[0].text.strip()
+                i.findChildren()[0].clear()
+                i.findChildren()[0].append(tag)
+                try:
+                    i.find("div", {"class" :"input_area"})['id'] = 'input%s' %inputs
+                except:
+                    print i
+
+                
+
         # Process using Pelican HTMLReader
-        content = '<body>{0}</body>'.format(content)  # So Pelican HTMLReader works
+        content = '<body>{0}</body>'.format(unicode(soup))  # So Pelican HTMLReader works
         parser = MyHTMLParser(self.settings, filename)
         parser.feed(content)
         parser.close()
@@ -207,7 +240,7 @@ class iPythonNB(BaseReader):
         css = '\n'.join(filter_tags(css) for css in info['inlining']['css'])
         css = css + CUSTOM_CSS
         body = css + body
-
+        body = body + js
         return body, metadata
 
 
