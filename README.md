@@ -1,14 +1,13 @@
 # Pelican plugin for blogging with iPython Notebooks
 
-This fork of the original [pelican-ipythonnb](https://github.com/danielfrg/pelican-ipythonnb/) has to small modifications to the output HTML
+This fork of the original [pelican-ipythonnb](https://github.com/danielfrg/pelican-ipythonnb/) makes two small modifications to the output HTML:
 
-1. It hides all input code cells by default, and provides a toggle link on the interpreter to view them
-   See http://andras.nemes.com.au/blog/ for an example.
+1. All input code cells are hidden by default, and the in interpreter `In [1]` text toggles their visiblity.
 2. Any code cells that begin with #HIDE are removed from the output all together. This allows the use of code blocks that won't be visible in the static website.
 
 ## Works with
 
-This has been tested only on the default theme notmyidea and notmyidea-cms.
+This has been tested only on the default theme notmyidea and notmyidea-cms. 
 
 ## Requirements
 
@@ -40,7 +39,6 @@ If you host your site on github pages (or just git) you could use it as a submod
 git submodule add git://github.com/danielfrg/pelican-ipythonnb.git plugins/ipythonnb
 ```
 
-The toggle requires a javascript toggle 
 ## How to use it
 
 ### Option 1 (recomended)

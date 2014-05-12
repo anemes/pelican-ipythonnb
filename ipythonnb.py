@@ -61,7 +61,6 @@ js = '''
             document.getElementById(d).style.display = 'block';
         }
     }
-    show=true;
 </script>
 '''
 
