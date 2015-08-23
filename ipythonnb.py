@@ -237,8 +237,6 @@ class iPythonNB(BaseReader):
             return '<style type=\"text/css\">{0}</style>'.format(ans)
 
         css = '\n'.join(filter_tags(css) for css in info['inlining']['css'])
-        print css
-        print 'hi'
         css = CUSTOM_CSS
         body = css + body
         body = body + js
